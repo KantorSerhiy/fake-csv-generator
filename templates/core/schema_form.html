@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% block title %}<title>{{ object|yesno:"Update,Add" }} schema</title>{% endblock %}
+
+{% block content %}
+
+<form action="" method="post" enctype="multipart/form-data">
+  <h1>{{ object|yesno:"Update,New" }} schema {% if schema %}{{ schema.title }}{% endif %}
+    <a href="{% url 'test_task:schema-list'%}" class="btn btn-link">Back</a>
+  </h1>
+  <button type="submit" name="action" value="submit" class="btn btn-primary">Submit</button>
+
+  {% csrf_token %} {{ form|crispy }}
+  <div style="margin-top: 20px;">
+    <h3>Schema columns</h3>
+    {% for formset in inlines %}
+    <div class="formset">
+      {{ formset.management_form|crispy}}
+        {% for columnsform in formset %}
+        <div class="row flex-nowrap row-cols-lg-auto g-3 align-items-center">
+          {{ columnsform|crispy }}
+          <div class="delete">
+            <button type="button" id="delete_column" class="btn btn-danger" onclick="removeColumn()">Delete</button>
+          </div>
+        </div>
+          {% if forloop.last %}
+            <div>
+              <button class="btn btn-primary" type="submit" name="action" value="add_column">Add column</button>
+            </div>
+          {% endif %}
+        {% endfor %}
+        </div>
+      {% endfor %}
+
+  </div>
+</form>
+
+  <script>
+    const removeColumn = (delete_column) => {
+    const element = document.getElementById(delete_column);
+    removeColumn(element);
+  };
+  </script>
+{% endblock %}

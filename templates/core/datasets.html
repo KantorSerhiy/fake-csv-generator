@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+  <title>Datasets</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Sample schema {{ schema.title }}
+  <a href="{% url 'test_task:schema-edit' schema.id %}" class="btn btn-link">Edit</a>
+</h1>
+{% if columns %}
+  <table class="table table-striped-columns">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Column Name</th>
+        <th scope="col">Column Type</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    {% for column in columns %}
+      <tr>
+        <th>{{ column.order }}</th>
+        <td>{{ column.column_name }}</td>
+        <td>{{ column.data_type }}</td>
+      </tr>
+
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+    <p class="lead">No columns</p>
+{% endif %}
+
+
+<form method="post" id="upload_form">
+  {% csrf_token %}
+
+  {{ form.rows }}
+
+  <button type="submit" class="btn btn-primary" >Generate data</button>
+</form>
+<br>
+  <h2>Data sets of {{ schema.title }}</h2>
+  <div id="datasets">
+    {% include 'core/table.html'%}
+  </div>
+
+  <script>
+    $(document).ready(function () {
+        $(document).on('submit', '#upload_form', function (e) {
+            e.preventDefault();
+            const newRow = `<tr>
+      <th scope="row">${$('#table tbody tr').length + 1}</th>
+      <td>${new Date().toLocaleString()}</td>
+      <td><span class="badge badge-danger">Proccesing</span></td>
+      <td></td>
+    </tr>`;
+            $('#table tbody').prepend(newRow);
+
+            $.ajax({
+                type: "POST",
+                url: "{% url "test_task:schema-detail" schema.pk %}",
+                data: {
+                    rows: $('#id_rows').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (data) {
+                    setTimeout(function () {
+                        $('#table tbody tr:first-child td:nth-child(3)').html(`<span class="badge badge-success">Success</span>`);
+                        $('#table tbody tr:first-child td:nth-child(4)').html(`<a href="${data.link}" class="btn btn-link">Download</a>`);
+
+                    }, 1000);
+                },
+            });
+        });
+    });
+  </script>
+
+{% endblock %}

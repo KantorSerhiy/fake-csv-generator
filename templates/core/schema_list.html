@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Schema list</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>
+  Data schemas
+  <a class="btn btn-primary" href="{% url 'test_task:schema-create' %}">
+    Create Schema
+    <i class="fas fa-plus"></i>
+  </a>
+</h1>
+  <br>
+{% if schema_list %}
+<table class="table table-striped-columns">
+  <thead class="table-primary">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Title</th>
+      <th scope="col">Modified</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  {% for schema in schema_list %}
+  <tbody>
+    <tr class="text-dark">
+      <td>{{ forloop.counter }}</td>
+      <td>
+        <a class="btn btn-link" href="{{ schema.get_absolute_url }}"> {{ schema.title}}</a>
+      </td>
+      <td>
+        {% if schema.updated %} {{ schema.updated }} {% else %} {{ schema.created }} {% endif %}
+      </td>
+      <td>
+        <a href="{% url 'test_task:schema-edit' pk=schema.id%}" class ="text-decoration-none">Edit schema</a>
+        <a href="{% url 'test_task:schema-delete' pk=schema.id%}" class ="text-decoration-none text-danger ms-2">DELETE</a>
+      </td>
+    </tr>
+  </tbody>
+  {% endfor %}
+</table>
+{% else %}
+<p>There is no schemas </p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,27 @@
+<table class="table table-strip table-bordered text-center bg-white" id="table">
+  <thead class="table-primary">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Created</th>
+      <th scope="col">Status</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for dataset in schema.schemadatasets.all %}
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td>{{ dataset.created }}</td>
+      <td>
+        {% if dataset.status == 1 %}
+        <span class="badge badge-success">Success</span>
+          <td>
+        <a href="{{dataset.download_link}}" class="btn btn-link">Download</a>
+          </td>
+        {%else%}
+        <span class="badge badge-danger">Processing...</span>
+        {%endif%}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
