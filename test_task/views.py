@@ -1,6 +1,8 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse, HttpRequest, FileResponse
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import generic
@@ -116,7 +118,6 @@ class DataSetsView(LoginRequiredMixin, FormMixin, generic.DetailView):
         )
 
 
-class ColumnsDeleteViews(LoginRequiredMixin, DeleteView):
-    class ColumnsDeleteViews(LoginRequiredMixin, generic.DeleteView):
-        model = Column
-        success_url = reverse_lazy("test_task:schema-create")
+class ColumnsDeleteViews(LoginRequiredMixin, generic.DeleteView):
+    model = Column
+    success_url = reverse_lazy("test_task:schema-create")
