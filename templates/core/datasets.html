@@ -75,6 +75,9 @@
                         $('#table tbody tr:first-child td:nth-child(4)').html(`<a href="${data.link}" class="btn btn-link">Download</a>`);
 
                     }, 1000);
+
+                    $(`#datasets`).html(data["msg"])
+                    document.getElementById("upload_form").reset()
                 },
             });
         });
